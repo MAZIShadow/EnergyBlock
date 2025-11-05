@@ -2,6 +2,7 @@ package org.home.mazi.main;
 
 import org.home.mazi.data.Block;
 import org.home.mazi.data.Container;
+
 import java.util.*;
 
 public class Main {
@@ -10,33 +11,54 @@ public class Main {
 		return Math.round(value * 10.0) / 10.0;
 	}
 
-	public static void main(String[] args) {
+	enum Option {
+		OPTIMAL_BLOCKS,
+		OPTIMAL_ENERGY
+	}
 
-		double requestedChakra = 350.0;
-		final int MAX_BLOCKS = 3;
-		final int MAX_CONTAINER_PER_BLOCK = 6;
+	public static void main(String[] args) {
+		double requestedChakra = 208.0;
+		final int MAX_BLOCKS = 2;
+		final int MAX_CONTAINER_PER_BLOCK = 10;
 		final int ALL_CONTAINER = MAX_BLOCKS * MAX_CONTAINER_PER_BLOCK;
 		Block.MAX_ENERGY = 200.0;
 		Container.MIN_ENERGY = 21.0;
-		Container.MAX_ENERGY = 41.0;
+		Container.MAX_ENERGY = 55.6;
+		Option selected = Option.OPTIMAL_ENERGY;
+		System.out.printf("Selected option: [%s]%n", selected);
+		int expected_number_of_containers;
 
-		int expectedC = (int) Math.floor(requestedChakra / Container.MIN_ENERGY);
-		System.out.printf("Expected containers: %d%n", expectedC);
+		switch (selected) {
+			case OPTIMAL_BLOCKS:
+				expected_number_of_containers = (int) Math.ceil(requestedChakra / Container.MAX_ENERGY);
+			default:
+				expected_number_of_containers = (int) Math.floor(requestedChakra / Container.MIN_ENERGY);
+				break;
+		}
 
-		if (expectedC > ALL_CONTAINER) {
+		System.out.printf("Expected containers: %d%n", expected_number_of_containers);
+
+		if (requestedChakra > MAX_BLOCKS * Block.MAX_ENERGY) {
+			System.out.printf("Not enough blocks only [%d]%n", MAX_BLOCKS);
+			return;
+		}
+
+		if (expected_number_of_containers > ALL_CONTAINER) {
 			System.out.printf("Not enough containers only [%d]%n", ALL_CONTAINER);
 			return;
 		}
 
-		double optimalValue = fixCalculation(requestedChakra / expectedC);
-		double specificValue = optimalValue + fixCalculation(requestedChakra - optimalValue * expectedC);
+		double optimalValue = fixCalculation(requestedChakra / expected_number_of_containers);
+		double specificValue = optimalValue + fixCalculation(requestedChakra - optimalValue * expected_number_of_containers);
 		System.out.printf("OptionalValue: %.1f%nSpecificValue: %.1f%n%n", optimalValue, specificValue);
 
 		if (optimalValue > Container.MAX_ENERGY || optimalValue < Container.MIN_ENERGY || specificValue > Container.MAX_ENERGY || specificValue < Container.MIN_ENERGY) {
 			System.out.println("IMPOSSIBLE!!!!");
 			return;
 		}
+
 		List<Block> listBlocks = new ArrayList<>();
+
 		for (int i = 0; i < MAX_BLOCKS; i++) {
 			List<Container> list = new ArrayList<>();
 			for (int j = 0; j < MAX_CONTAINER_PER_BLOCK; j++) {
@@ -44,9 +66,10 @@ public class Main {
 			}
 			listBlocks.add(new Block(list));
 		}
+
 		Queue<Double> queue = new LinkedList<>();
 		queue.add(specificValue);
-		for (int i = 1; i < expectedC; i++) {
+		for (int i = 1; i < expected_number_of_containers; i++) {
 			queue.add(optimalValue);
 		}
 
