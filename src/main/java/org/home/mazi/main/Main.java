@@ -31,6 +31,7 @@ public class Main {
 		switch (selected) {
 			case OPTIMAL_BLOCKS:
 				expectedNumberOfContainers = (int) Math.ceil(requestedChakra / Container.MAX_ENERGY);
+				break;
 			default:
 				expectedNumberOfContainers = (int) Math.floor(requestedChakra / Container.MIN_ENERGY);
 				break;
