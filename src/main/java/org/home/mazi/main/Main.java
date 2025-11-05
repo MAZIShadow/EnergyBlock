@@ -26,30 +26,30 @@ public class Main {
 		Container.MAX_ENERGY = 55.6;
 		Option selected = Option.OPTIMAL_ENERGY;
 		System.out.printf("Selected option: [%s]%n", selected);
-		int expected_number_of_containers;
+		int expectedNumberOfContainers;
 
 		switch (selected) {
 			case OPTIMAL_BLOCKS:
-				expected_number_of_containers = (int) Math.ceil(requestedChakra / Container.MAX_ENERGY);
+				expectedNumberOfContainers = (int) Math.ceil(requestedChakra / Container.MAX_ENERGY);
 			default:
-				expected_number_of_containers = (int) Math.floor(requestedChakra / Container.MIN_ENERGY);
+				expectedNumberOfContainers = (int) Math.floor(requestedChakra / Container.MIN_ENERGY);
 				break;
 		}
 
-		System.out.printf("Expected containers: %d%n", expected_number_of_containers);
+		System.out.printf("Expected containers: %d%n", expectedNumberOfContainers);
 
 		if (requestedChakra > MAX_BLOCKS * Block.MAX_ENERGY) {
 			System.out.printf("Not enough blocks only [%d]%n", MAX_BLOCKS);
 			return;
 		}
 
-		if (expected_number_of_containers > ALL_CONTAINER) {
+		if (expectedNumberOfContainers > ALL_CONTAINER) {
 			System.out.printf("Not enough containers only [%d]%n", ALL_CONTAINER);
 			return;
 		}
 
-		double optimalValue = fixCalculation(requestedChakra / expected_number_of_containers);
-		double specificValue = optimalValue + fixCalculation(requestedChakra - optimalValue * expected_number_of_containers);
+		double optimalValue = fixCalculation(requestedChakra / expectedNumberOfContainers);
+		double specificValue = optimalValue + fixCalculation(requestedChakra - optimalValue * expectedNumberOfContainers);
 		System.out.printf("OptionalValue: %.1f%nSpecificValue: %.1f%n%n", optimalValue, specificValue);
 
 		if (optimalValue > Container.MAX_ENERGY || optimalValue < Container.MIN_ENERGY || specificValue > Container.MAX_ENERGY || specificValue < Container.MIN_ENERGY) {
@@ -69,7 +69,7 @@ public class Main {
 
 		Queue<Double> queue = new LinkedList<>();
 		queue.add(specificValue);
-		for (int i = 1; i < expected_number_of_containers; i++) {
+		for (int i = 1; i < expectedNumberOfContainers; i++) {
 			queue.add(optimalValue);
 		}
 
